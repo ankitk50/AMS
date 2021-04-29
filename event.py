@@ -23,7 +23,7 @@ class EventChain(object):
 
         """
         # TODO Task 1.2.2: Your code goes here
-        pass
+        heapq.heappush(self.event_list,e)
 
     def remove_oldest_event(self):
         """
@@ -31,7 +31,8 @@ class EventChain(object):
         :return: next event in event chain
         """
         # TODO Task 1.2.2: Your code goes here
-        pass
+        heapq.heappop(self.event_list)
+        return self.event_list[0]
 
 
 class SimEvent(object):
@@ -60,8 +61,19 @@ class SimEvent(object):
         """
         Comparison is made by comparing timestamps. If time stamps are equal, priorities are compared.
         """
+        if self.timestamp == other.timestamp:
+            if self.priority < other.priority:
+                return self
+            else:
+                return other
+
+        if self.timestamp < other.timestamp:
+            return self
+        else:
+            return other
+
         # TODO Task 1.2.1: Your code goes here
-        pass
+ 
 
 
 class CustomerArrival(SimEvent):

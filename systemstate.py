@@ -24,7 +24,7 @@ class SystemState(object):
         :return: system_state object
         """
         # TODO Task 1.1.1: Your code goes here
-        self. sim= SimParam()
+        self. sim= SimParam() #self.sim=sim
         self.sys_state=SystemState(self)
 
         self.server_busy=False
