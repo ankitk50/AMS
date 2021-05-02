@@ -64,6 +64,8 @@ class Simulation(object):
         # start simulation (run)
         while not self.sim_state.stop:
             # TODO Task 1.4.1: Your code goes here
+            e =self.event_chain.remove_oldest_event()
+            e.process()
             """
             Hint:
 

@@ -32,8 +32,8 @@ class EventChain(object):
         :return: next event in event chain
         """
         # TODO Task 1.2.2: Your code goes here
-        heapq.heappop(self.event_list)
-        return self.event_list[0]
+        return heapq.heappop(self.event_list)
+        
 
 
 class SimEvent(object):
@@ -50,7 +50,7 @@ class SimEvent(object):
         """
         self.timestamp = timestamp
         self.priority = 0
-        self.sim = SimState()
+        self.sim = sim
 
     def process(self):
         """
@@ -63,16 +63,11 @@ class SimEvent(object):
         Comparison is made by comparing timestamps. If time stamps are equal, priorities are compared.
         """
         if self.timestamp == other.timestamp:
-            if self.priority < other.priority:
-                return self
-            else:
-                return other
+            return self.priority < other.priority
 
         if self.timestamp < other.timestamp:
-            return self
-        else:
-            return other
-
+            return self.timestamp < other.timestamp
+        
         # TODO Task 1.2.1: Your code goes here
  
 
@@ -98,7 +93,26 @@ class CustomerArrival(SimEvent):
         Implement according to the task description.
         """
         # TODO Task 1.3.2: Your code goes here
-        pass
+
+        self.sim.sim_state.now=self.timestamp
+        if not self.sim.system_state.add_packet_to_server():
+            if not self.sim.system_state.add_packet_to_queue():
+                self.sim.sim_state.packet_dropped()
+                print('drop the packet')
+            else:
+                print('packet added to queue')
+                self.sim.sim_state.packet_accepted()
+        else:
+            print('packet added to server')
+            self.sim.sim_state.packet_accepted()
+            if self.sim.sim_param.init_rand:
+                random.seed(self.sim.sim_param.SEED)
+                self.sim.sim_param.init_rand = False
+            time=self.timestamp+random.randint(1,1000)
+            self.sim.event_chain.insert(ServiceCompletion(self.sim,time))
+        
+        self.timestamp+=self.sim.sim_param.IAT 
+        self.sim.event_chain.insert(self)
 
 
 class ServiceCompletion(SimEvent):
@@ -122,8 +136,14 @@ class ServiceCompletion(SimEvent):
         Implement according to the task description
         """
         # TODO Task 1.3.3: Your code goes here
-        pass
-
+        self.sim.system_state.server_busy=False #let the server breathe for a moment
+        self.sim.sim_state.now = self.timestamp
+        if self.sim.system_state.buffer_content==0:
+            self.sim.system_state.complete_service()
+        else:
+            if self.sim.system_state.start_service():
+                time=self.timestamp+ random.randint(1,1000)
+                self.sim.event_chain.insert(ServiceCompletion(self.sim, time))
 
 class SimulationTermination(SimEvent):
     """
@@ -144,5 +164,7 @@ class SimulationTermination(SimEvent):
         Implement according to the task description.
         """
         # TODO Task 1.3.1: Your code goes here
-        self.sim.stop=True
+        self.sim.sim_state.now=self.timestamp
+        self.sim.event_chain.insert(self)
+        self.sim.sim_state.stop=True
 

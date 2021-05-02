@@ -16,6 +16,7 @@ class SimParam(object):
 
         # number of runs before first evaluation
         self.NO_OF_RUNS = 1000
+        self.init_rand= True
 
         # maximal allowed packets to drop in one run (SIM_TIME)
         self.MAX_DROPPED = 10
