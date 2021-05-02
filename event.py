@@ -105,9 +105,6 @@ class CustomerArrival(SimEvent):
         else:
             print('packet added to server')
             self.sim.sim_state.packet_accepted()
-            if self.sim.sim_param.init_rand:
-                random.seed(self.sim.sim_param.SEED)
-                self.sim.sim_param.init_rand = False
             time=self.timestamp+random.randint(1,1000)
             self.sim.event_chain.insert(ServiceCompletion(self.sim,time))
         
