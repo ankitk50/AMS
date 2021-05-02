@@ -1,5 +1,6 @@
 import heapq
 import random
+from simstate import SimState
 
 
 class EventChain(object):
@@ -49,7 +50,7 @@ class SimEvent(object):
         """
         self.timestamp = timestamp
         self.priority = 0
-        self.sim = sim
+        self.sim = SimState()
 
     def process(self):
         """
@@ -143,4 +144,5 @@ class SimulationTermination(SimEvent):
         Implement according to the task description.
         """
         # TODO Task 1.3.1: Your code goes here
-        pass
+        self.sim.stop=True
+

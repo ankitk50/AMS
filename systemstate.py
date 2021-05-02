@@ -24,8 +24,8 @@ class SystemState(object):
         :return: system_state object
         """
         # TODO Task 1.1.1: Your code goes here
-        self. sim= SimParam() #self.sim=sim
-        self.sys_state=SystemState(self)
+        self.sim=sim
+        #self.sys_state=SystemState(self)
 
         self.server_busy=False
         self.buffer_content=0
@@ -40,7 +40,7 @@ class SystemState(object):
         """
         # TODO Task 1.1.2: Your code goes here
         # when sever is free and there is nothing in the buffer, packet is served directly
-        if not self.server_busy and self.buffer_content==0:
+        if not self.server_busy: #and self.buffer_content==0:
             self.server_busy=True
            # self.buffer_content-=1 #FIXME 
             return True
@@ -54,9 +54,11 @@ class SystemState(object):
         """
         # TODO Task 1.1.2: Your code goes here
         #when sever is busy and buffer content is not full
-        if self.buffer_content<self.sim.S  and self.server_busy: #FIXME
+        if self.buffer_content<self.sim.sim_param.S:# and self.server_busy: #FIXME
             self.buffer_content+=1
             return True
+        else:
+            return False
       
 
     def complete_service(self):
@@ -76,7 +78,9 @@ class SystemState(object):
         :return: True if buffer is not empty and a stored packet is being served.
         """
         # TODO Task 1.1.3: Your code goes here
-        if self.buffer_content>0 and self.server_busy:
+        if self.buffer_content>0:
+            self.buffer_content-=1
+            self.server_busy=True
             return True
         else:
             return False
