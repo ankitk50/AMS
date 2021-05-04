@@ -10,29 +10,41 @@ The function do_simulation_study() should be used to run the simulation routine,
 """
 
 
-def task_1_7_1():
+def task_1_7_1(q_len=1):
     """
     Execute task 1.7.1 and perform a simulation study according to the task assignment.
     :return: Minimum number of buffer spaces to meet requirements.
     """
-    sim_param = SimParam()
-    random.seed(sim_param.SEED)
-    sim = Simulation(sim_param)
-    return do_simulation_study(sim)
+    while(1):
+        sim_param = SimParam()
+        random.seed(sim_param.SEED)
+        sim = Simulation(sim_param)
+        e,d,bp= do_simulation_study(sim,q_len)
+        if e>=0.8:
+            break
+        else:
+            q_len+=1
+        return(q_len)
 
 
-def task_1_7_2():
+def task_1_7_2(q_len=1):
     """
     Execute task 1.7.2 and perform a simulation study according to the task assignment.
     :return: Minimum number of buffer spaces to meet requirements.
     """
-    sim_param = SimParam()
-    random.seed(sim_param.SEED)
-    sim_param.SIM_TIME = 1000000
-    sim_param.MAX_DROPPED = 100
-    sim_param.NO_OF_RUNS = 100
-    sim = Simulation(sim_param)
-    return do_simulation_study(sim)
+    while(1):
+        sim_param = SimParam()
+        random.seed(sim_param.SEED)
+        sim_param.SIM_TIME = 1000000
+        sim_param.MAX_DROPPED = 100
+        sim_param.NO_OF_RUNS = 100
+        sim = Simulation(sim_param)
+        e,d,bp= do_simulation_study(sim,q_len)
+        if e> 0.8:
+            break
+        else:
+            q_len+=1
+    return q_len
 
 
 def task_1_7_3():
@@ -43,16 +55,25 @@ def task_1_7_3():
     pass
 
 
-def do_simulation_study(sim):
+def do_simulation_study(sim, q_len):
     """
     Implement according to task description.
     """
     # TODO Task 1.7.1: Your code goes here
-
-    return sim.sim_param.S
+    n_runs= sim.sim_param.NO_OF_RUNS
+    sim.sim_param.S=q_len
+    counter =0
+    for _ in range(n_runs):
+        res=sim.do_simulation()
+        d=res.packets_dropped
+        bp=res.blocking_probability
+        if d<10:
+            counter+=1
+    eff= counter/n_runs
+    return (eff,d,bp)
 
 
 if __name__ == '__main__':
-    task_1_7_1()
-    task_1_7_2()
+    print('Task1: ',task_1_7_1())
+    print('Task2: ',task_1_7_2())
     task_1_7_3()

@@ -93,18 +93,21 @@ class CustomerArrival(SimEvent):
         Implement according to the task description.
         """
         # TODO Task 1.3.2: Your code goes here
-        random.seed(1000)
+
         self.sim.sim_state.now=self.timestamp
         if not self.sim.system_state.add_packet_to_server():
             if not self.sim.system_state.add_packet_to_queue():
                 self.sim.sim_state.packet_dropped()
-            
+                #print('drop the packet')
             else:
-                
+                #print('packet added to queue')
                 self.sim.sim_state.packet_accepted()
         else:
-           
+            #print('packet added to server')
             self.sim.sim_state.packet_accepted()
+            if self.sim.sim_param.init_rand:
+                random.seed(self.sim.sim_param.SEED)
+                self.sim.sim_param.init_rand = False
             time=self.timestamp+random.randint(1,1000)
             self.sim.event_chain.insert(ServiceCompletion(self.sim,time))
         
@@ -133,7 +136,7 @@ class ServiceCompletion(SimEvent):
         Implement according to the task description
         """
         # TODO Task 1.3.3: Your code goes here
-        self.sim.system_state.server_busy=False #let the server breathe for a moment
+        self.sim.system_state.server_busy=False #let the server breath for a moment
         self.sim.sim_state.now = self.timestamp
         if self.sim.system_state.buffer_content==0:
             self.sim.system_state.complete_service()
