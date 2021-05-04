@@ -24,7 +24,7 @@ def task_1_7_1(q_len=1):
             break
         else:
             q_len+=1
-        return(q_len)
+    return(q_len)
 
 
 def task_1_7_2(q_len=1):
@@ -40,7 +40,7 @@ def task_1_7_2(q_len=1):
         sim_param.NO_OF_RUNS = 100
         sim = Simulation(sim_param)
         e,d,bp= do_simulation_study(sim,q_len)
-        if e> 0.8:
+        if e>= 0.8:
             break
         else:
             q_len+=1
@@ -67,13 +67,15 @@ def do_simulation_study(sim, q_len):
         res=sim.do_simulation()
         d=res.packets_dropped
         bp=res.blocking_probability
-        if d<10:
+        
+        if d<sim.sim_param.MAX_DROPPED:
             counter+=1
     eff= counter/n_runs
+    #print(eff)
     return (eff,d,bp)
 
 
 if __name__ == '__main__':
     print('Task1: ',task_1_7_1())
     print('Task2: ',task_1_7_2())
-    task_1_7_3()
+    #task_1_7_3()

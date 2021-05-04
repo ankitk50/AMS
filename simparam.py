@@ -16,13 +16,13 @@ class SimParam(object):
 
         # number of runs before first evaluation
         self.NO_OF_RUNS = 1000
-        self.init_rand= True
+        self.init_rand= True #avoid to use rand int more than once.
 
         # maximal allowed packets to drop in one run (SIM_TIME)
         self.MAX_DROPPED = 10
 
         # set seed for random number generation
-        self.SEED = 0
+        self.SEED = 3736064
         self.SEED_IAT = 0
         self.SEED_ST = 1
 
