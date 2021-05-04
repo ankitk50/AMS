@@ -136,7 +136,7 @@ class ServiceCompletion(SimEvent):
         Implement according to the task description
         """
         # TODO Task 1.3.3: Your code goes here
-        self.sim.system_state.server_busy=False #let the server breath for a moment
+        self.sim.system_state.server_busy=False #let the server breath for a moment (not necessary)
         self.sim.sim_state.now = self.timestamp
         if self.sim.system_state.buffer_content==0:
             self.sim.system_state.complete_service()
