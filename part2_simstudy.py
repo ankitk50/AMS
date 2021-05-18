@@ -1,3 +1,7 @@
+from simparam import SimParam
+from simulation import Simulation
+import random
+import matplotlib.pyplot as plt
 """
 This file should be used to keep all necessary code that is used for the simulation study in part 2 of the programming
 assignment. It contains the tasks 2.7.1 and 2.7.2.
@@ -11,7 +15,22 @@ def task_2_7_1():
     Here, you should execute task 2.7.1 (and 2.7.2, if you want).
     """
     # TODO Task 2.7.1: Your code goes here
-    pass
+    sim_param=SimParam()
+    random.seed(sim_param.SEED)
+    sim_collection=[]
+    for s_val in sim_param.S_VALUES:
+
+        print('Queue Length: ',s_val)
+        sim_param.S=s_val
+        sim=Simulation()
+        sim.sim_param.S=s_val
+        sim.counter_collection.reset()
+        sim.do_simulation()
+        sim.counter_collection.report()
+        sim_collection.append(sim)
+    return sim_collection
+
+
 
 
 def task_2_7_2():
@@ -19,7 +38,22 @@ def task_2_7_2():
     Here, you can execute task 2.7.2 if you want to execute it in a separate function
     """
     # TODO Task 2.7.2: Your code goes here or in the function above
-    pass
+    sim_param=SimParam()
+    sim_param.SIM_TIME=1000000
+    random.seed(sim_param.SEED)
+    sim_collection=[]
+    for s_val in sim_param.S_VALUES:
+
+        print('Queue Length: ',s_val)
+        sim_param.S=s_val
+        sim=Simulation()
+        sim.sim_param.S=s_val
+        sim.counter_collection.reset()
+        sim.do_simulation()
+        sim.counter_collection.report()
+        sim_collection.append(sim)
+    return sim_collection
+
 
 
 def do_simulation_study(sim, print_queue_length=False, print_waiting_time=True):

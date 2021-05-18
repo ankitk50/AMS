@@ -27,6 +27,7 @@ class Histogram(object):
         self.bins = []
         self.bin_mids = []
         self.type = typestr
+    
 
     def count(self, value):
         """
@@ -52,7 +53,7 @@ class Histogram(object):
         """
         raise NotImplementedError
 
-    def plot(self, diag_type="histogram", show_plot=False):
+    def plot(self, title,diag_type="histogram", show_plot=True, ):
         """
         Plot function for histogram.
         :param diag_type: string can be "histogram" for a standard bar plot (default), "side-by-side" for a
@@ -67,7 +68,7 @@ class Histogram(object):
             Plot line plot - mainly thought for mean waiting time
             """
             pyplot.plot(self.bin_mids, self.histogram, "+-", label='S=' + str(self.sim.sim_param.S))
-
+            
         elif diag_type == "side-by-side":
             """
             Plot side-by-side histogram plot - mainly thought for mean queue length
@@ -81,12 +82,13 @@ class Histogram(object):
             """
             weights = numpy.full(len(self.values), 1.0 / float(len(self.values)))
             pyplot.hist(self.values, self.bins, alpha=0.5, label='S='+str(self.sim.sim_param.S), rwidth=.7, weights=weights)
-
+            
         else:
             raise TypeError("Undefined histogram plotting types: %s" % diag_type)
 
         pyplot.legend(loc='upper right')
         if show_plot:
+            pyplot.title=title
             pyplot.show()
 
 
@@ -135,7 +137,7 @@ class TimeIndependentHistogram(Histogram):
                 """
                 self.bins=numpy.ndarray.tolist(numpy.histogram_bin_edges(self.values, bins='sqrt'))
                 numpy.histogram(self.values,self.bins)
-                self.plot()
+                self.plot(title="Queue length")
 
             elif self.type == "bp":
 
@@ -157,7 +159,7 @@ class TimeIndependentHistogram(Histogram):
                 """
                 self.bins=numpy.ndarray.tolist(numpy.histogram_bin_edges(self.values, bins='sqrt'))
                 numpy.histogram(self.values,self.bins)
-                self.plot()
+                self.plot(title="Waiting time")
 
             else:
                 raise TypeError("Undefined histogram types: %s" % self.type)
@@ -212,6 +214,6 @@ class TimeDependentHistogram(Histogram):
         """
         if len(self.values) != 0:
             self.histogram, self.bins = numpy.histogram(self.values, weights=self.weights, bins=50)
-            self.plot(diag_type="histogram")
+            self.plot(diag_type="histogram", title="Sys utilisation")
         else:
             raise ValueError("Can't plot histogram with no values.")

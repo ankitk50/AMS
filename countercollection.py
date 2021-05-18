@@ -21,15 +21,15 @@ class CounterCollection(object):
         self.sim = sim
 
         # waiting time
-        self.cnt_wt = TimeIndependentCounter()
+        self.cnt_wt = TimeIndependentCounter(name="Waiting time")
         self.hist_wt = TimeIndependentHistogram(self.sim, "w")
 
         # queue length
-        self.cnt_ql = TimeDependentCounter(self.sim)
+        self.cnt_ql = TimeDependentCounter(self.sim, name= "Queue length")
         self.hist_ql = TimeDependentHistogram(self.sim, "q")
 
         # system utilization
-        self.cnt_sys_util = TimeDependentCounter(self.sim)
+        self.cnt_sys_util = TimeDependentCounter(self.sim, name= "Sys utilisation")
         """
         # blocking probability
         self.cnt_bp = TimeIndependentCounter("bp")

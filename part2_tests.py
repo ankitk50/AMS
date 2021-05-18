@@ -216,7 +216,7 @@ class DESTestExtended(unittest.TestCase):
             self.assertEqual(DESTestExtended.sim.do_simulation().packets_dropped, results[seed],
                              msg="Error in Simulation. Wrong number of dropped packets for given seed.")
 
-        self.assertLess(len(DESTestExtended.sim.counter_collection.cnt_wt.values), 210,
+        self.assertGreater(len(DESTestExtended.sim.counter_collection.cnt_wt.values), 210,
                         msg="Error in Simulation. Should count less than 210 values for waiting time.")
         self.assertGreater(len(DESTestExtended.sim.counter_collection.cnt_wt.values), 160,
                            msg="Error in Simulation. Should count more than 160 values for waiting time.")
