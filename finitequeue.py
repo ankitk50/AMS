@@ -25,7 +25,7 @@ class FiniteQueue(object):
         :return: true if packet has been enqueued, false if rejected
         """
         # TODO Task 2.2.1: Your code goes here
-        if self.get_queue_length<self.sim.sim_param.S:
+        if self.get_queue_length()<self.sim.sim_param.S:
             self.buffer.put(packet)
             return True
         else:
@@ -37,7 +37,7 @@ class FiniteQueue(object):
         :return: first packet in line
         """
         # TODO Task 2.2.1: Your code goes here
-        self.buffer.get() #FIFO, get the latest packet
+        return self.buffer.get() #FIFO, get the latest packet
 
     def get_queue_length(self):
         """

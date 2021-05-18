@@ -36,20 +36,21 @@ class SystemState(object):
         Try to add a packet to the server unit.
         :return: True if server is not busy and packet has been added successfully.
         """
-        
+        iat= self.sim.sim_state.now - self.last_arrival
+        self.last_arrival =self.sim.sim_state.now #update last arrival
+        self.served_packet=Packet(self.sim,iat)
+        self.served_packet.start_service()
         if self.server_busy:
             return False
         else:
-            iat= self.sim.sim_state.now - self.last_arrival
-            self.last_arrival =self.sim.sim_state.now #update last arrival
-            self.served_packet=Packet(self.sim,iat)
-            self.served_packet.start_service()
+           
             self.server_busy = True
             return True
 
     def add_packet_to_queue(self):
         """
         Try to add a packet to the buffer.
+
         :return: True if buffer/queue is not full and packet has been added successfully.
         """
         iat= self.sim.sim_state.now - self.last_arrival

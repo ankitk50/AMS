@@ -40,7 +40,7 @@ class Packet(object):
         """
         # TODO Task 2.1.1: Your code goes here
         self.completed=True
-        self.waiting=False
+        self.served=False
         self.t_complete=self.sim.sim_state.now
 
     def get_waiting_time(self):

@@ -63,6 +63,7 @@ class Simulation(object):
                 # if event exists and timestamps are ok, process the event
                 if self.sim_state.now <= e.timestamp:
                     self.sim_state.now = e.timestamp
+                    self.counter_collection.count_queue()
                     e.process()
                 else:
                     print('NOW: ' + str(self.sim_state.now) + ', EVENT TIMESTAMP: ' + str(e.timestamp))

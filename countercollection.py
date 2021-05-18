@@ -110,3 +110,7 @@ class CounterCollection(object):
         self.hist_ql.count(self.sim.system_state.get_queue_length())
 
         # TODO Task 2.5.1: Your code goes here
+        if self.sim.system_state.server_busy:
+            self.cnt_sys_util.count(1)
+        else:
+            self.cnt_sys_util.count(0)

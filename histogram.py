@@ -43,6 +43,7 @@ class Histogram(object):
         self.histogram = None
         self.bins = []
         self.bin_mids = []
+        
 
     def report(self):
         """
@@ -111,7 +112,7 @@ class TimeIndependentHistogram(Histogram):
         Add new value to histogram, i.e., the internal array.
         """
         # TODO Task 2.4.1: Your code goes here
-        pass
+        self.values.append(value)
 
     def report(self):
         """
@@ -132,7 +133,9 @@ class TimeIndependentHistogram(Histogram):
                 Use numpy.histogram to calculate self.histogram and self.bins.
                 Afterwards call the plot function using self.plot() with adequate parameters
                 """
-                pass
+                self.bins=numpy.ndarray.tolist(numpy.histogram_bin_edges(self.values, bins='sqrt'))
+                numpy.histogram(self.values,self.bins)
+                self.plot()
 
             elif self.type == "bp":
 
@@ -141,7 +144,9 @@ class TimeIndependentHistogram(Histogram):
                 Use numpy.histogram to calculate self.histogram and self.bins.
                 Afterwards call the plot function using self.plot() with adequate parameters
                 """
-                pass
+                self.bins=numpy.ndarray.tolist(numpy.histogram_bin_edges(self.values, bins='sqrt'))
+                numpy.histogram(self.values,self.bins)
+                self.plot()
 
             elif self.type == "w":
 
@@ -150,7 +155,9 @@ class TimeIndependentHistogram(Histogram):
                 Use numpy.histogram to calculate self.histogram and self.bins.
                 Afterwards call the plot function using self.plot() with adequate parameters
                 """
-                pass
+                self.bins=numpy.ndarray.tolist(numpy.histogram_bin_edges(self.values, bins='sqrt'))
+                numpy.histogram(self.values,self.bins)
+                self.plot()
 
             else:
                 raise TypeError("Undefined histogram types: %s" % self.type)
@@ -182,11 +189,19 @@ class TimeDependentHistogram(Histogram):
         Consider the duration of this value as well.
         """
         # TODO Task 2.4.2: Your code goes here
-        pass
+        self.values.append(value)
+        self.first_timestamp=self.last_timestamp
+        self.last_timestamp=self.sim.sim_state.now
+        self.weights.append(self.last_timestamp-self.first_timestamp)
 
     def reset(self):
         # TODO Task 2.4.2: Your code goes here
         Histogram.reset(self)
+        self.values = []
+        self.histogram = None
+        self.bins = []
+        self.bin_mids = []
+        self.weights=[]
 
     def report(self):
         """
