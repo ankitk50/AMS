@@ -16,18 +16,15 @@ class SimParam(object):
 
         # number of runs before first evaluation
         self.NO_OF_RUNS = 1000
-        self.init_rand= True #avoid to use rand int more than once.
+
+        # number of repeats if close to criterion (establish confidence)
+        self.R = 3
 
         # maximal allowed packets to drop in one run (SIM_TIME)
         self.MAX_DROPPED = 10
 
         # set seed for random number generation
-        self.SEED = 3736064
-        self.SEED_IAT = 0
-        self.SEED_ST = 1
-
-        # set desired utilization (rho)
-        self.RHO = .5
+        self.SEED = 1
 
     def print_sim_config(self):
         """

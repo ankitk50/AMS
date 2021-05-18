@@ -3,8 +3,8 @@ from systemstate import SystemState
 from event import EventChain, CustomerArrival, SimulationTermination
 from simresult import SimResult
 from simparam import SimParam
-# from countercollection import CounterCollection
-# from rng import RNG, ExponentialRNS, UniformRNS
+#from countercollection import CounterCollection
+#from rng import RNG, ExponentialRNS, UniformRNS
 
 
 class Simulation(object):
@@ -21,9 +21,7 @@ class Simulation(object):
         self.system_state = SystemState(self)
         self.event_chain = EventChain()
         self.sim_result = SimResult(self)
-        # TODO Task 2.4.3: Uncomment the line below
-        # self.counter_collection = CounterCollection()
-        # TODO Task 3.1.2: Uncomment the line below and replace the "None"
+        #self.counter_collection = CounterCollection()
         """
         if no_seed:
             self.rng = RNG(None, None)
@@ -31,24 +29,19 @@ class Simulation(object):
             self.rng = RNG(None, None)
         """
 
-    def reset(self, no_seed=False):
+
+    def reset(self):
         """
         Reset the Simulation object.
-        :param no_seed: is an optional parameter. If it is set to True, the RNG should be reset without a
-        a specific seed.
         """
         self.sim_state = SimState()
         self.system_state = SystemState(self)
         self.event_chain = EventChain()
         self.sim_result = SimResult(self)
-        # TODO Task 2.4.3: Uncomment the line below
-        # self.counter_collection = CounterCollection()
-        # TODO Task 3.1.2: Uncomment the line below and replace the "None"
+        #self.counter_collection = CounterCollection()
         """
-        if no_seed:
-            self.rng = RNG(None, None)
-        else:
-            self.rng = RNG(None, None)
+        self.rng.iat_rns.set_parameters(None)
+        self.rng.st_rns.set_parameters(None)
         """
 
     def do_simulation(self):
@@ -63,39 +56,21 @@ class Simulation(object):
 
         # start simulation (run)
         while not self.sim_state.stop:
-            # TODO Task 1.4.1: Your code goes here
-            e =self.event_chain.remove_oldest_event()
-            e.process()
-            """
-            Hint:
 
-            You can use and adapt the following lines in your realization
+            # get next simevent from events
             e = self.event_chain.remove_oldest_event()
-            e.process()
-            """
-            pass
-            # TODO Task 2.4.3: Your code goes here somewhere
+            if e:
+                # if event exists and timestamps are ok, process the event
+                if self.sim_state.now <= e.timestamp:
+                    self.sim_state.now = e.timestamp
+                    e.process()
+                else:
+                    print('NOW: ' + str(self.sim_state.now) + ', EVENT TIMESTAMP: ' + str(e.timestamp))
+                    raise RuntimeError("ERROR: TIMESTAMP OF EVENT IS SMALLER THAN CURRENT TIME.")
 
-        # gather results for sim_result object
-        self.sim_result.gather_results()
-        return self.sim_result
-
-    def do_simulation_n_limit(self, n):
-        """
-        Call this function, if the simulation should stop after a given number of packets
-        Do one simulation run. Initialize simulation and create first event.
-        After that, one after another event is processed.
-        :param n: number of customers, that are processed before the simulation stops
-        :return: SimResult object
-        """
-        # insert first event
-        self.event_chain.insert(CustomerArrival(self, 0))
-
-        # start simulation (run)
-        while not self.sim_state.stop:
-            # TODO Task 4.3.2: Your code goes here
-            # TODO Task 5.2.2: Your code goes here
-            pass
+            else:
+                print('Event chain is empty. Abort')
+                self.sim_state.stop = True
 
         # gather results for sim_result object
         self.sim_result.gather_results()

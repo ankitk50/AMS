@@ -4,84 +4,96 @@ import random
 
 """
 This file should be used to keep all necessary code that is used for the simulation study in part 1 of the programming
-assignment. It contains the tasks 1.7.1, 1.7.2 and 1.7.3.
+assignment. It contains the tasks 1.7.1, 1.7.2 and the bonus task 1.7.3.
 
 The function do_simulation_study() should be used to run the simulation routine, that is described in the assignment.
 """
 
 
-def task_1_7_1(q_len=1,sim_t=100000):
+def task_1_7_1():
     """
     Execute task 1.7.1 and perform a simulation study according to the task assignment.
     :return: Minimum number of buffer spaces to meet requirements.
     """
-    bp_list=[]
-    while(1):
-        sim_param = SimParam()
-        random.seed(sim_param.SEED)
-        sim_param.SIM_TIME = sim_t # used to answer  question 1.7.2
-        sim = Simulation(sim_param)
-        e,d,bp= do_simulation_study(sim,q_len)
-        bp_list.append(bp)
-        if e>=0.8:
-            break
-        else:
-            q_len+=1
-    return(q_len, bp, bp_list)
+    sim_param = SimParam()
+    random.seed(sim_param.SEED)
+    sim = Simulation(sim_param)
+    return do_simulation_study(sim)
 
 
-def task_1_7_2(q_len=1):
+def task_1_7_2():
     """
     Execute task 1.7.2 and perform a simulation study according to the task assignment.
     :return: Minimum number of buffer spaces to meet requirements.
     """
-    bp_list=[]
-    while(1):
-        sim_param = SimParam()
-        random.seed(sim_param.SEED)
-        sim_param.SIM_TIME = 1000000
-        sim_param.MAX_DROPPED = 100
-        sim_param.NO_OF_RUNS = 100
-        sim = Simulation(sim_param)
-        e,d,bp= do_simulation_study(sim,q_len)
-        bp_list.append(bp)
-        if e>= 0.8:
-            break
-        else:
-            q_len+=1
-    return q_len,bp,bp_list
+    sim_param = SimParam()
+    random.seed(sim_param.SEED)
+    sim_param.SIM_TIME = 1000000
+    sim_param.MAX_DROPPED = 100
+    sim_param.NO_OF_RUNS = 100
+    sim = Simulation(sim_param)
+    return do_simulation_study(sim)
 
 
 def task_1_7_3():
     """
-    Execute task 1.7.3.
+    Execute bonus task 1.7.3.
     """
-    # TODO Task 1.7.3: Your code goes here (if necessary)
     pass
 
 
-def do_simulation_study(sim, q_len):
+def do_simulation_study(sim):
     """
-    Implement according to task description.
+    This function performs the simulation study. Study runs as follows:
+    simulation goal: in 80% of all runs only 10 packets dropped (see simparam.MAX_DROPPED for this value)
+    If simulation goal is missed by far (< 70% or > 90%), the number of buffer spaces is raised by one
+    If simulation goal is met or almost met: more runs are made with same number of buffer spaces
+    to see whether it's just happened by an unfortunate choosing of random numbers (establish confidence).
     """
-    # TODO Task 1.7.1: Your code goes here
-    n_runs= sim.sim_param.NO_OF_RUNS
-    sim.sim_param.S=q_len
-    counter =0
-    
-    for _ in range(n_runs):
-        res=sim.do_simulation()
-        d=res.packets_dropped
-        bp=res.blocking_probability
-        if d<sim.sim_param.MAX_DROPPED:
-            counter+=1
-        
-    eff= counter/n_runs
-    #print(eff)
-    return (eff,d,bp)
+    go_on = True
+
+    while go_on:
+        num_successful_runs = 0
+        for __ in range(sim.sim_param.NO_OF_RUNS):
+            sim.reset()
+            if sim.do_simulation().packets_dropped < sim.sim_param.MAX_DROPPED:
+                num_successful_runs += 1
+
+        print("S: " + str(sim.sim_param.S) + " GOOD/TOTAL: " + str(num_successful_runs) + "/"
+              + str(sim.sim_param.NO_OF_RUNS) + " PERCENT: " + str(
+            100 * num_successful_runs / sim.sim_param.NO_OF_RUNS) + "%")
+
+        # close to criterion: make more runs to ensure, that the result is not only forced
+        # by a fortunate or unfortunate choosing of random numbers
+        if float(num_successful_runs) / float(sim.sim_param.NO_OF_RUNS) >= .7:
+            # we may need to stop the simulation
+            go_on = False
+
+            for run in range(sim.sim_param.R - 1):
+                # sim.sim_param.R - 1 defines, how many more runs are made if close to criterion
+                num_successful_runs = 0
+
+                for _ in range(sim.sim_param.NO_OF_RUNS):
+                    sim.reset()
+                    if sim.do_simulation().packets_dropped < sim.sim_param.MAX_DROPPED:
+                        num_successful_runs += 1
+
+                print("S: " + str(sim.sim_param.S) + " GOOD/TOTAL: " + str(num_successful_runs) + "/"
+                      + str(sim.sim_param.NO_OF_RUNS) + " PERCENT: " + str(
+                    100 * num_successful_runs / sim.sim_param.NO_OF_RUNS) + "%")
+
+                # we need at least two out of three simulations to output more than 0.8 values in order to be confident
+                if float(num_successful_runs) / float(sim.sim_param.NO_OF_RUNS) < .8:
+                    go_on = True
+
+        if go_on:
+            # make buffer larger if criterion is not fulfilled sufficiently yet
+            sim.sim_param.S += 1
+
+    return sim.sim_param.S
 
 
 if __name__ == '__main__':
-    print('Task1: ',task_1_7_1())
-    print('Task2: ',task_1_7_2())
-    #task_1_7_3()
+    # task_1_7_1()
+    task_1_7_2()
+    # task_1_7_3()
