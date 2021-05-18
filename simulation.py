@@ -3,7 +3,7 @@ from systemstate import SystemState
 from event import EventChain, CustomerArrival, SimulationTermination
 from simresult import SimResult
 from simparam import SimParam
-#from countercollection import CounterCollection
+from countercollection import CounterCollection
 #from rng import RNG, ExponentialRNS, UniformRNS
 
 
@@ -21,7 +21,7 @@ class Simulation(object):
         self.system_state = SystemState(self)
         self.event_chain = EventChain()
         self.sim_result = SimResult(self)
-        #self.counter_collection = CounterCollection()
+        self.counter_collection = CounterCollection(self)
         """
         if no_seed:
             self.rng = RNG(None, None)

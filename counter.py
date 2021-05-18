@@ -92,7 +92,7 @@ class TimeIndependentCounter(Counter):
         Return the mean value of the internal array.
         """
         # TODO Task 2.3.1: Your code goes here
-        pass
+        return numpy.mean(self.values)
 
     def get_var(self):
         """
@@ -100,14 +100,15 @@ class TimeIndependentCounter(Counter):
         Note, that we take the estimated variance, not the exact variance.
         """
         # TODO Task 2.3.1: Your code goes here
-        pass
+        return numpy.var(self.values,ddof=1)
+
 
     def get_stddev(self):
         """
         Return the standard deviation of the internal array.
         """
         # TODO Task 2.3.1: Your code goes here
-        pass
+        return numpy.std(self.values,ddof=1)
 
     def report_confidence_interval(self, alpha=0.05, print_report=True):
         """
@@ -171,6 +172,7 @@ class TimeDependentCounter(Counter):
         self.sim = sim
         self.first_timestamp = 0
         self.last_timestamp = 0
+        self.diff_stamps=[]
 
     def count(self, value):
         """
@@ -178,28 +180,37 @@ class TimeDependentCounter(Counter):
         Duration from last to current value is considered.
         """
         # TODO Task 2.3.2: Your code goes here
-        pass
+        self.values.append(value)
+        self.first_timestamp=self.last_timestamp
+        self.last_timestamp=self.sim.sim_state.now
+        self.diff_stamps.append(self.last_timestamp-self.first_timestamp)
 
     def get_mean(self):
         """
         Return the mean value of the counter, normalized by the total duration of the simulation.
         """
         # TODO Task 2.3.2: Your code goes here
-        pass
+        a= numpy.asarray(self.values)
+        b=numpy.asarray(self.diff_stamps)
+        return numpy.dot(a,b)/(self.last_timestamp) #using dot product to compute area
 
     def get_var(self):
         """
         Return the variance of the TDC.
         """
         # TODO Task 2.3.2: Your code goes here
-        pass
+        mu=self.get_mean()
+        sq_values=numpy.asarray([(i-mu)**2 for i in self.values])
+        b=numpy.asarray((self.diff_stamps))
+        var = numpy.dot(sq_values,b)/(self.last_timestamp)
+        return var
 
     def get_stddev(self):
         """
         Return the standard deviation of the TDC.
         """
         # TODO Task 2.3.2: Your code goes here
-        pass
+        return math.sqrt(self.get_var())
 
     def reset(self):
         """
